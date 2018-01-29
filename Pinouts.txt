@@ -1,0 +1,81 @@
+Arduino pin
+
+0
+1
+2: sample 7
+3: sample 6
+4: sample 5
+5: sample 4
+6: sample 3
+7: sample 2
+8: sample 1
+9 
+10
+11
+12
+13
+14: sample 8
+15: sample 9
+16: sample 10
+17: sample 11
+18: sample 12
+19: sample 13
+20: sample 14
+21: sample 15
+22: sample 16
+23: sample 17
+24: sample 18
+25: sample 19
+26: sample 20
+27: sample 21
+28: sample 22
+29: sample 23
+30: sample 24
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42: control to relay for mechanical counter
+43: control to relay for motor
+44: XP (on display)
+45: YM (on display)
+46: backlight (on display)
+47: SD_CS (select pin for SD card reader)
+48: DC (on display/card reader)
+49: CS (on display/card reader)
+50: MISO (on display/card reader)
+51: MOSI (on display/card reader)
+52: SCK (on display/card reader)
+53: SS (on display/card reader)
+A0
+A1
+A2
+A3
+A4
+A5
+A6
+A7
+A8
+A9
+A10
+A11
+A12
+A13
+A14: YP (on display)
+A15: XM (on display)
+
+Ice Cube Relay Pinouts
+1 Hot from wall
+2 Control, from smaller relay
+3 Hot to Motor
+4
+5
+6
+7 Neut from wall
