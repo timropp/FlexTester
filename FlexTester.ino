@@ -218,6 +218,7 @@ void loop() {
       broken[i]=HIGH;
     }
     DispBrokenCounters();
+    LogToSD();
     EraseGoButton();
     ErasePauseButton();
     tft.setCursor(5,160);
