@@ -249,14 +249,15 @@ void loop() {
     DispBrokenCounters();
   }
 
-  if ((maxCount%DISP_FACTOR)==0 && !PAUSED && maxCount && !MechIncremented) {  // each time we've done DISP_COUNTER more stretches, increment the display on the mechanical counter
+  if ((maxCount%DISP_FACTOR)==0 && !PAUSED && maxCount && !MechIncremented) {  // each time we've done DISP_COUNTER more stretches, increment the display on the mechanical counter and log to the SD card
     digitalWrite(MECHANICAL,HIGH);
     delay(20); // the mechanical counter needs a 20ms pulse via the relay to increment. I tried 10ms and it didn't always increment.
     digitalWrite(MECHANICAL,LOW);
+    LogToSD();
     MechIncremented = true;
   }
   
-  if (maxCount%DISP_FACTOR<>0) {
+  if (maxCount%DISP_FACTOR!=0) {
     MechIncremented = false;
   }
 
@@ -527,5 +528,22 @@ void EraseGoButton() {
 
 void ErasePauseButton() {
   tft.fillRect(106,168,100,150,0x0000);
+}
+
+void LogToSD() {
+  if (SD_GOOD) {
+    String dataString="";
+    File dataFile=SD.open("flexlog.txt",FILE_WRITE);
+    if (dataFile) {
+      dataString+=(millis() - previousTime); //output the elapsed time
+      dataString+="\t";    
+      for (i=0;i<NUMBUTTONS;i++) {
+        dataString+=count[i];
+        dataString+=","; //comma between readings      
+      }
+      dataFile.println(dataString);
+      dataFile.close();
+    }
+  }
 }
 
