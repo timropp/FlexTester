@@ -5,6 +5,8 @@
 // https://github.com/thomasfredericks/Bounce2
 #include <Bounce2.h>
 
+bool TESTMODE=false; // if in test mode, additional info is output to serial monitor and there's a delay at the end of each loop
+
 int const LED_PIN = 13; //onboard indicator LED
 int const DEBOUNCE_TIME = 5; // time needed for debouncing switches, in ms
 int const MOTOR = 43; //pin to control the motor relay
@@ -34,6 +36,7 @@ bool PAUSED = 0;
 bool CLICKED = 0;
 
 Bounce *button; //sets up debouncers for each button
+Bounce ButtonStart=Bounce();
 
 int i; //junk variable for counting
 
@@ -85,6 +88,8 @@ void setup() {
   pinMode(LED_BLUE, OUTPUT);
 
   pinMode(BUTTON_START, INPUT_PULLUP);
+  ButtonStart.attach(BUTTON_START);
+  ButtonStart.interval(DEBOUNCE_TIME);
 
   //setup the relay pins
   pinMode(MOTOR, OUTPUT);
@@ -135,7 +140,7 @@ void loop() {
     LogToSD();
     while (HIGH) {
       // flash LED so user knows testing is done
-      setColor(80,0,0);
+      setColor(80,0,80);
       delay(500);
       setColor(0,255,255);
       delay(500);
@@ -153,11 +158,6 @@ void loop() {
       }
     }
     brokenTime = millis(); //reset the timer
-  }
-
-  if (prevbrokenCount != brokenCount) {
-    //update screen with broken info
-    prevbrokenCount = brokenCount;
   }
 
   if ((maxCount % DISP_FACTOR) == 0 && !PAUSED && maxCount && !MechIncremented) { // each time we've done DISP_COUNTER more stretches, increment the display on the mechanical counter and log to the SD card
@@ -201,7 +201,6 @@ void loop() {
   }
 
   //elapsedTime = millis() - startTime; //total time since the test began
-
 }
 
 String padded(long num, int len) { // pad a number with leading spaces. Syntax is padded(number-to-pad, total-spaces). ie padded(40,3) returns " 40"
@@ -245,7 +244,9 @@ void setColor(int red, int green, int blue)
 
 void checkButton()
 {
-  if ((digitalRead(BUTTON_START))==LOW) { // button is pressed
+  ButtonStart.update();
+  if (ButtonStart.fell()) { // button is pressed
+    Serial.println("Button pressed.");
     if (PAUSED) { // system is currently paused, so we need to start it
       PAUSED = 0;
       digitalWrite(MOTOR, HIGH); // start the motor
@@ -256,10 +257,8 @@ void checkButton()
     else { // system is running, so we need to pause it
       PAUSED = 1;
       digitalWrite(MOTOR, LOW); // stop the motor
-      if (prevbrokenCount != brokenCount) { // update counts on any broken samples
-        prevbrokenCount = brokenCount;
-      }
       runTime = runTime + (millis() - startTime); //add the runtime to the total
+      setColor(255,255,0);
     }
   }
 }
