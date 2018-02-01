@@ -57,16 +57,6 @@ void setup() {
   Serial.println(" buttons");
   Serial.println(" ");
 
-  Serial.println("Initializing SD card...");
-  if (!SD.begin(SD_CS)) {
-    Serial.println("failed, will try again in 1 second");
-    delay(1000);
-    if (!SD.begin(SD_CS)) {
-      Serial.println("Failed a second time, giving up");
-      SD_GOOD = 0;
-    }
-  }
-
   button = (Bounce *) malloc(sizeof(Bounce) * NUMBUTTONS); //allocate memory for bounce array
 
   //first, we need to set up the buttons
@@ -97,10 +87,24 @@ void setup() {
   pinMode(MECHANICAL, OUTPUT);
   digitalWrite(MECHANICAL, LOW);
 
+  Serial.println("Initializing SD card...");
+  if (!SD.begin(SD_CS)) {
+    Serial.println("failed, will try again in 1 second");
+    delay(1000);
+    if (!SD.begin(SD_CS)) {
+      Serial.println("Failed a second time, giving up");
+      SD_GOOD = 0;
+      while (HIGH) {
+        setColor(255,0,0);
+        delay(500);
+        setColor(0,0,0);
+        delay(500);
+      }
+    }
+  }  
+
   digitalWrite(LED_PIN, HIGH); //turn on LED because we're starting
   setColor(255, 0, 0); // LED on as red since we're not ready to start
-  Serial.print("Button status: ");
-  Serial.println(digitalRead(BUTTON_START));
 
   PAUSED = 1;
 
@@ -108,7 +112,7 @@ void setup() {
   previousTime = millis(); //record the current timer as the last count time
   brokenTime = millis();
 
-  setColor(255, 255, 0); // LED on as yellow since we're ready but not running the test
+  setColor(255, 200, 0); // LED on as yellow since we're ready but not running the test
 }
 
 void loop() {
