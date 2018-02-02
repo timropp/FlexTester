@@ -120,19 +120,22 @@ void loop() {
   // check if button is pressed
   checkButton();
 
-  if (maxCount == PAUSE_COUNT && (millis() - restartTime) > 5000) { //if we've reached the pause point, pause the test - "millis() - restartTime) > 5000" is to ensure that we don't pause again on the next loop when we haven't had time for samples to flex again
-    digitalWrite(MOTOR, LOW); //stop the motor
-    PAUSED = 1;
-    runTime = runTime + (millis() - startTime); //add the runtime to the total
-
-    while (PAUSED) {
-      checkButton();
-      delay(500);
-    }
-    digitalWrite(MOTOR, HIGH); //restart the motor and go on
-    restartTime = millis(); //record the time that testing continued
-    previousTime = millis();
-  }
+    //removed pause function; would not restart when pressing the button and don't have time to figure out why right now
+//  if (maxCount == PAUSE_COUNT && (millis() - restartTime) > 5000) { //if we've reached the pause point, pause the test - "millis() - restartTime) > 5000" is to ensure that we don't pause again on the next loop when we haven't had time for samples to flex again
+//    digitalWrite(MOTOR, LOW); //stop the motor
+//    setColor(255,200,0); // LED to yellow while paused
+//    PAUSED = 1;
+//    runTime = runTime + (millis() - startTime); //add the runtime to the total
+//
+//    while (PAUSED) {
+//      Serial.println("Checking button");
+//      checkButton();
+//      delay(500);
+//    }
+//    digitalWrite(MOTOR, HIGH); //restart the motor and go on
+//    restartTime = millis(); //record the time that testing continued
+//    previousTime = millis();
+//  }
 
   if ((millis() - previousTime) > 10000 && !PAUSED) { //if no counts have increased in the last 10 seconds...
     digitalWrite(MOTOR, LOW); //stop the motor
@@ -249,7 +252,7 @@ void setColor(int red, int green, int blue)
 void checkButton()
 {
   ButtonStart.update();
-  if (ButtonStart.fell()) { // button is pressed
+  if (ButtonStart.fell()) { // button is pressed and released
     Serial.println("Button pressed.");
     if (PAUSED) { // system is currently paused, so we need to start it
       PAUSED = 0;
@@ -262,7 +265,7 @@ void checkButton()
       PAUSED = 1;
       digitalWrite(MOTOR, LOW); // stop the motor
       runTime = runTime + (millis() - startTime); //add the runtime to the total
-      setColor(255,255,0);
+      setColor(255,200,0);
     }
   }
 }
